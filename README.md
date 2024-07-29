@@ -1,5 +1,5 @@
 # Direct FUZZ
-
+![Direct FUZZ ASCII ART ](https://github.com/timothysunny/direct-fuzz/blob/main/default/dfuzz.png?raw=true)
 **Version 1.0**
 
 Direct FUZZ is a simple yet powerful directory brute-forcer written in Python. It helps in discovering hidden directories on a web server by making requests to the server and checking the response codes.
