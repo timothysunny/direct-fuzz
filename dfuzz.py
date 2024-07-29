@@ -51,7 +51,7 @@ ______ ___________ _____ _____ _____  ______ _   _  ______ ______
 |___/  \___/\_| \_\____/ \____/ \_/   \_|    \___/ \_____/\_____/                                                                                                       
     """, 'cyan'))
     print(colored("DIRECT FUZZ v.01", 'yellow'))
-    print(colored("Usage: python direct_blow.py -u <URL> -w <wordlist> [--user-agent <USER_AGENT>] [-o <output_file>]", 'yellow'))
+    print(colored("Usage: python dfuzz.py -u <URL> -w <wordlist> [--user-agent <USER_AGENT>] [-o <output_file>]", 'yellow'))
     print("\n" + "-"*60 + "\n")
     print(colored(f'URL         : {url}'))
     print(colored(f'Method      : GET'))
