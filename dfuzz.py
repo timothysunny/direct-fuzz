@@ -3,8 +3,10 @@ import argparse
 from termcolor import colored
 from tqdm import tqdm
 import re
+import os
 
 def load_wordlist(path):
+    # Loads Wordlist from txt file
     try:
         with open(path, 'r') as file:
             return [line.strip() for line in file]
@@ -19,7 +21,7 @@ def direct_brute(url, word, useragent):
         r = requests.get(directory, headers=headers)
         size_kb = len(r.content) / 1024
         status_code = r.status_code
-        if status_code in [200, 201, 204]:
+        if status_code in [200, 201, 204]: #Colour Coding the different status code
             return colored(f'Status: {status_code}, Size: {size_kb:.2f} KB - /{word}', 'green')
         elif status_code in [301, 302, 307]:
             return colored(f'Status: {status_code}, Size: {size_kb:.2f} KB - /{word}', 'yellow')
@@ -36,10 +38,10 @@ def save_output(output, filename):
         with open(filename, 'a') as file:
             file.write(output + '\n')
 
-def remove_color_codes(text):
+def remove_color_codes(text): #Removing colour syntax from output txt
     return re.sub(r'\x1b\[[0-9;]*m', '', text)
 
-def print_header():
+def print_header(url):
     print(colored(r"""
 ______ ___________ _____ _____ _____  ______ _   _  ______ ______
 |  _  \_   _| ___ \  ___/  __ \_   _| |  ___| | | ||___  /|___  /
@@ -50,24 +52,31 @@ ______ ___________ _____ _____ _____  ______ _   _  ______ ______
     """, 'cyan'))
     print(colored("DIRECT FUZZ v.01", 'yellow'))
     print(colored("Usage: python direct_blow.py -u <URL> -w <wordlist> [--user-agent <USER_AGENT>] [-o <output_file>]", 'yellow'))
-    print("\n" + "="*60 + "\n")
+    print("\n" + "-"*60 + "\n")
+    print(colored(f'URL         : {url}'))
+    print(colored(f'Method      : GET'))
+    print("\n" + "-"*60 + "\n")
 
 def main():
     parser = argparse.ArgumentParser(description="Brute Forcer")
     parser.add_argument("-u", "--url", required=True, help="URL")
-    parser.add_argument("-w", required=True, help="Wordlist")
+    parser.add_argument("-w", required=False, help="Wordlist")
     parser.add_argument("--user-agent", required=False, help="User-Agent")
     parser.add_argument("-o", "--output", required=False, help="Output") 
 
     args = parser.parse_args()
 
-    print_header()
-    wordlist = load_wordlist(args.w)
+    print_header(args.url)
+    if args.w:
+        wordlist = load_wordlist(args.w)
+    else:
+        wordlist_path = os.path.join(os.path.dirname(__file__), 'default', 'seclist.txt')
+        wordlist = load_wordlist(wordlist_path)
     try:
         if args.output:
             open(args.output, 'w').close()  
         results = []
-        with tqdm(total=len(wordlist), desc="Progress", unit="req") as pbar:
+        with tqdm(total=len(wordlist), desc="Progress", unit="req") as pbar: #Progress Bar
             for word in wordlist:
                 result = direct_brute(args.url, word, args.user_agent)
                 if result:
